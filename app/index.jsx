@@ -1,13 +1,21 @@
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function Index() {
   return (
     <View
-      style={{
-        flex: 1,
-      }}
+      style={styles.view}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text style={styles.container}>Edit app/index.tsx to edit this screen.</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    fontFamily:'Outfit',
+    fontSize: 40,
+  },
+  view:{
+    flex: 1,
+  }
+});
