@@ -1,18 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Link } from "expo-router";
+import { StyleSheet, Text, View, } from "react-native";
 
 export default function Index() {
   return (
     <View
       style={styles.view}
     >
-      <Text style={styles.container}>Edit app/index.tsx to edit this screen.</Text>
+      <Link href="/login">
+      <Text style={styles.container}>Go To login screen</Text>
+      </Link>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    fontFamily:'Outfit',
+    fontFamily:'outfit',
     fontSize: 40,
   },
   view:{
