@@ -38,7 +38,7 @@ export default function LoginScreen() {
 
       if (createdSessionId) {
         await setActive?.({ session: createdSessionId });
-        router.replace("/home"); // ✅ NOW it navigates
+        router.replace('/(tabs)/home'); // ✅ NOW it navigates
       }
     } catch (err) {
       console.log(err);

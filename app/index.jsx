@@ -1,14 +1,21 @@
-import { Link } from "expo-router";
-import { StyleSheet, Text, View, } from "react-native";
+import { useUser } from "@clerk/clerk-expo";
+import { Redirect } from "expo-router";
+import { StyleSheet, View } from "react-native";
 
 export default function Index() {
+
+  const {user} = useUser();
+
   return (
     <View
       style={styles.view}
     >
-      <Link href="/login">
-      <Text style={styles.container}>Go To login screen</Text>
-      </Link>
+      {user ? 
+      <Redirect href={"/(tabs)/home"} />
+      :
+      <Redirect href={"/login"} />
+      }
+      
     </View>
   );
 }
