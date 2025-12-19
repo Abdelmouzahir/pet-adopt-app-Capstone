@@ -19,7 +19,7 @@ export default function Slider() {
          const snapshot = await getDocs(collection(db, "Sliders"));
          //log sliders to console
          snapshot.forEach((doc) => {
-           console.log(doc.id, " => ", doc.data());
+           //console.log(doc.id, " => ", doc.data());
            setSliderList(sliderList => [...sliderList, doc.data()]);
          });
 

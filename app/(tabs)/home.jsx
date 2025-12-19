@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import Header from '../../components/Home/Header'
+import PetListByCategory from '../../components/Home/PetListByCategory'
 import Slider from '../../components/Home/Slider'
 
 export default function Home() {
@@ -12,9 +13,9 @@ export default function Home() {
       <Slider />
 
 
-      {/* Category */}
-
-      {/* List Of Pets */}
+      {/* PetList + Category */}
+      <PetListByCategory />
+      
 
       {/* Add New Pet Option */}
 
