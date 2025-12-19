@@ -1,9 +1,10 @@
-import { useSSO } from "@clerk/clerk-expo";
+import { useAuth, useSSO } from "@clerk/clerk-expo";
 import * as Linking from 'expo-linking';
 import { router } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
 import * as React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect } from "react";
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "../../constants/Colors";
 
 
@@ -25,7 +26,27 @@ WebBrowser.maybeCompleteAuthSession();
 export default function LoginScreen() {
 
   useWarmUpBrowser();
+  const {isLoaded, isSignedIn} = useAuth();
   const {startSSOFlow} = useSSO();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (isSignedIn) router.replace("/(tabs)/home");
+  }, [isLoaded, isSignedIn]);
+
+// ✅ While Clerk is restoring the session, don't show login yet
+  if (!isLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+  
+// ✅ If signed in, don't show login (avoids flash)
+  if (isSignedIn) {
+    return null;
+  }
 
   const onGooglePress = async () => {
     try {
@@ -97,6 +118,8 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontFamily:'outfit-medium',
     fontSize:20,
+   
+
   }
 
 
