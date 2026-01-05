@@ -4,7 +4,7 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react
 import { db } from "../../config/FirebaseConfig";
 import Colors from "../../constants/Colors";
 
-export default function Category() {
+export default function Category({ category }) {
   const [categoryList, setCategoryList] = useState([]);
   //click on category to filter pets by category
   //define state for selected category is dogs by default
@@ -33,7 +33,10 @@ export default function Category() {
         numColumns={4}
         renderItem={({ item, index }) => (
           <TouchableOpacity 
-            onPress={() => setSelectedCategory(item?.name)}
+            onPress={() => {
+              setSelectedCategory(item?.name);
+              category(item?.name);
+            }}
           style={{ flex: 1 }}>
             <View style={[styles.imgContainer,
               selectedCategory === item?.name && styles.selectedCategoryCont
