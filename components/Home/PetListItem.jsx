@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from '../../constants/Colors';
+import MarkFav from '../MarkFav';
 
 
 export default function PetListItem({pet}) {
@@ -14,6 +15,9 @@ export default function PetListItem({pet}) {
         params:pet
     })}
     style={styles.container}>
+        <View style={styles.markIcon}>
+            <MarkFav pet={pet} color="white" />
+        </View>
       <Image source={{uri:pet?.imageUrl}}
              style={{width:150,
                     height:135,
@@ -60,6 +64,12 @@ const styles = StyleSheet.create({
         paddingHorizontal:7,
         borderRadius:10,
         fontSize:11,
+    },
+    markIcon:{
+        position:'absolute',
+        top:10,
+        right:10,
+        zIndex:10,
     }
 
 

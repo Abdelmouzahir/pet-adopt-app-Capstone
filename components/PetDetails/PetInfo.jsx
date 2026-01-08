@@ -1,6 +1,7 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Colors from '../../constants/Colors';
+import MarkFav from '../MarkFav';
 
 
 export default function PetInfo({pet}) {
@@ -12,7 +13,7 @@ export default function PetInfo({pet}) {
             <Text style={styles.nameStyle}>{pet?.name}</Text>
             <Text style={styles.addressStyle}>{pet?.address}</Text>
         </View>
-            <Ionicons name="heart-outline" size={30} color="black" />
+            <MarkFav pet={pet} />
        
            
       </View>

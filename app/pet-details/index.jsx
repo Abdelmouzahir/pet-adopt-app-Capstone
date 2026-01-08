@@ -56,7 +56,7 @@ export default function PetDetails() {
 
 const styles = StyleSheet.create({
     adoptButton: {
-        padding: 15,
+        padding: 20,
         backgroundColor: Colors.PRIMARY,
 
     },
