@@ -39,7 +39,7 @@ export default function MarkFav({pet, color="black"}) {
     <View>
 
       {favList?.includes(pet.id)? <Pressable onPress={RemoveFromFav}>
-        <Ionicons name="heart" size={30} color="red" />
+        <Ionicons name="heart" size={30} color="#FA5C5C" />
       </Pressable>
         :
       <Pressable onPress={AddToFav}>
