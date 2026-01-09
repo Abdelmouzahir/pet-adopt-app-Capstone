@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Link } from 'expo-router';
 import Header from '../../components/Home/Header';
 import PetListByCategory from '../../components/Home/PetListByCategory';
 import Slider from '../../components/Home/Slider';
@@ -21,10 +22,12 @@ export default function Home() {
       
 
       {/* Add New Pet Option */}
-      <TouchableOpacity  style={styles.addPetButton}>
+      <Link href="/add-new-pet" asChild>
+      <Pressable style={styles.addPetButton}>
         <MaterialIcons name="pets" size={24} color={Colors.PRIMARY} />
         <Text style={styles.addPetButtonText}>Add New Pet</Text>
-      </TouchableOpacity>
+      </Pressable>
+      </Link>
 
       
     </View>

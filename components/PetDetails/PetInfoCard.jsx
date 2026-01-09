@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     },
     ageValue:{
         fontFamily: 'outfit-medium',
-        fontSize: 17,
+        fontSize: 16,
     },
 
 })

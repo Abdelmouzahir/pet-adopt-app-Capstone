@@ -7,7 +7,7 @@ import MarkFav from '../MarkFav';
 export default function PetInfo({pet}) {
   return (
     <View>
-      <Image source={{uri:pet.imageUrl}} style={{width: '100%', height: 400, objectFit: 'cover'}} />
+      <Image source={{uri:pet.imageUrl}} style={{width: '100%', height: 385, objectFit: 'cover'}} />
       <View style={styles.container}>
         <View>
             <Text style={styles.nameStyle}>{pet?.name}</Text>

@@ -48,17 +48,16 @@ export default function Favorite() {
   return (
     <View style={styles.container}>
       <Text style={styles.textbox}>Favorites</Text>
-
       <FlatList
       data ={favPets}
       numColumns={2}
       onRefresh={GetFavPetIds}
+      columnWrapperStyle={{justifyContent:'space-between', marginBottom:15}}
+
       refreshing={loader}
-      renderItem={({item, index}) =>(
-        <View>
+      renderItem={({item, index}) =>( 
           <PetListItem pet={item} />
-          </View>
-          
+   
       )}
       
       

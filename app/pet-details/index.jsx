@@ -23,8 +23,11 @@ export default function PetDetails() {
 
 
   return (
-    <View>
-      <ScrollView>
+    <View style={{flex:1}}>
+      <ScrollView
+      contentContainerStyle={{ paddingBottom: 30 }}
+      showsVerticalScrollIndicator={false}
+      >
         {/* Pet Info */}
         <PetInfo pet={pet} />
 
