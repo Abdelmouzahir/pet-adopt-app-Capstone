@@ -5,9 +5,21 @@ import MarkFav from '../MarkFav';
 
 
 export default function PetInfo({pet}) {
+  // Add a console log here to see exactly what the URL looks like
+  //console.log("Image URL being rendered:", pet?.imageUrl);
+
+  // Function to fix the Firebase URL encoding
+  const getCorrectImageUrl = (url) => {
+    if (!url) return null;
+    // This replaces the unencoded slash in the path with the required %2F
+    return url.replace('/PetAdopt/', '/PetAdopt%2F');
+  };
+
+  const finalImageUrl = getCorrectImageUrl(pet?.imageUrl);
+
   return (
     <View>
-      <Image source={{uri:pet.imageUrl}} style={{width: '100%', height: 385, objectFit: 'cover'}} />
+      <Image source={{uri: finalImageUrl}} key={finalImageUrl} style={{width: '100%', height: 385, resizeMode: 'cover'}} />
       <View style={styles.container}>
         <View>
             <Text style={styles.nameStyle}>{pet?.name}</Text>

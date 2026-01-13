@@ -22,8 +22,6 @@ import { db, storage } from "../../config/FirebaseConfig";
 import Colors from "../../constants/Colors";
 import SelectField from "./SelectField";
 
-
-
 export default function AddNewPet() {
   const [formData, setFormData] = useState({
     category: "Dogs",
@@ -32,7 +30,7 @@ export default function AddNewPet() {
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
   const router = useRouter();
-  const {user} = useUser();
+  const { user } = useUser();
 
   const onSubmit = () => {
     // Here you can handle form submission, e.g., validate and send data to backend
@@ -57,24 +55,29 @@ export default function AddNewPet() {
   // used to upload Pet image to firebase storage (server)
   const UploadImage = async () => {
     setLoader(true);
-    const  resp = await fetch(image);
-    const blob = await resp.blob();
-    const storageRef = ref(storage, '/PetAdopt/'+Date.now()+'.jpg');
+    try {
+      const resp = await fetch(image);
+      const blob = await resp.blob();
+      const storageRef = ref(storage, "/PetAdopt/" + Date.now() + ".jpg");
 
-    uploadBytes(storageRef, blob).then((snapshot) => {
-      console.log('File Uploaded!');
-    })
-    .then(resp =>{
-      getDownloadURL(storageRef).then(async (downloadUrl) =>{
-        console.log('File available at', downloadUrl);
-        SaveFormData(downloadUrl);
+      // 1. Upload the file
+      await uploadBytes(storageRef, blob);
+      console.log("File Uploaded!");
 
-      }
-      );
-    })
+      // 2. Get the URL
+      const downloadUrl = await getDownloadURL(storageRef);
+      console.log("File available at", downloadUrl);
 
-  }
+      // 3. Save to Firestore
+      await SaveFormData(downloadUrl);
+    } catch (error) {
+      console.error("Error in upload process:", error);
+      setLoader(false);
+      Alert.alert("Error", "Failed to upload image or save data.");
+    }
+  };
 
+  //func to save the data entered by user
   const SaveFormData = async (imageUrl) => {
     const docId = Date.now().toString();
     await setDoc(doc(db, "Pets", docId), {
@@ -84,7 +87,6 @@ export default function AddNewPet() {
       email: user?.primaryEmailAddress?.emailAddress,
       userImage: user?.imageUrl,
       id: docId,
-
     });
     setLoader(false);
     if (Platform.OS === "android") {
@@ -92,9 +94,10 @@ export default function AddNewPet() {
     } else {
       Alert.alert("Success ✅", "Pet added successfully!");
     }
-    router.replace('/(tabs)/home')
+    router.replace("/(tabs)/home");
   };
 
+  //
   const handleInputChange = (fieldName, fieldValue) => {
     setFormData((prev) => ({
       ...(prev ?? {}),
@@ -118,7 +121,7 @@ export default function AddNewPet() {
     }
   };
 
-  // Example categories (you said you have 4)
+  // Example categories
   const categoryOptions = ["Cats", "Dogs", "Birds", "Fish"];
 
   return (
@@ -232,11 +235,16 @@ export default function AddNewPet() {
       </View>
 
       {/* Submit */}
-      <TouchableOpacity disabled={loader} style={styles.button} onPress={onSubmit}>
-        {loader ? <ActivityIndicator size={"large"}/> 
-        : 
-        <Text style={styles.submitButtonText}>Submit</Text>}
-        
+      <TouchableOpacity
+        disabled={loader}
+        style={styles.button}
+        onPress={onSubmit}
+      >
+        {loader ? (
+          <ActivityIndicator size={"large"} />
+        ) : (
+          <Text style={styles.submitButtonText}>Submit</Text>
+        )}
       </TouchableOpacity>
     </ScrollView>
   );

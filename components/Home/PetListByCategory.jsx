@@ -35,6 +35,7 @@ export default function PetListByCategory() {
     <View>
       <Category category={(value)=>GetPetList(value)} />
       <FlatList
+        
         style={{marginTop:10}}
         data={petList}
         horizontal={true}

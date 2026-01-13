@@ -16,7 +16,7 @@ export default function Home() {
       {/* Slider */}
       <Slider />
 
-
+      
       {/* PetList + Category */}
       <PetListByCategory />
       
