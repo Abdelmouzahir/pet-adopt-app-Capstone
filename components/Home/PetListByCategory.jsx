@@ -49,7 +49,7 @@ export default function PetListByCategory() {
         columnWrapperStyle={{
           justifyContent: "space-between",
           paddingHorizontal: 16,
-          marginTop: 10,
+          marginTop: 14,
 
         }}
         contentContainerStyle={{

@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "outfit-medium",
     fontSize: 20,
+    paddingHorizontal:5
   },
   sliderImage: {
     width: 40,
