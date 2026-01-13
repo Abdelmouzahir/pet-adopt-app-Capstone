@@ -1,17 +1,17 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList, View } from 'react-native';
+import { FlatList, View } from "react-native";
 import { db } from "../../config/FirebaseConfig";
-import Category from './Category';
+import Category from "./Category";
 import PetListItem from "./PetListItem";
 
-export default function PetListByCategory() {
 
+export default function PetListByCategory() {
   const [petList, setPetList] = useState([]);
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    GetPetList('Dogs');
+    GetPetList("Dogs");
   }, []);
 
   /**
@@ -21,7 +21,7 @@ export default function PetListByCategory() {
 
   const GetPetList = async (category) => {
     setLoader(true);
-    setPetList([]); //clear previous data 
+    setPetList([]); //clear previous data
     const q = query(collection(db, "Pets"), where("category", "==", category));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -30,22 +30,35 @@ export default function PetListByCategory() {
     setLoader(false);
   };
 
-  
-  return (
-    <View>
-      <Category category={(value)=>GetPetList(value)} />
-      <FlatList
-        
-        style={{marginTop:10}}
-        data={petList}
-        horizontal={true}
-        refreshing={loader}
-        onRefresh={()=>GetPetList('Dogs')}
-        renderItem={({item,index})=>(
-          <PetListItem pet={item} />
+  const NUM_COLS = 2;
 
-        )}
+  return (
+    <View style={{ flex: 1 }}>
+
+      {/* Fixed  */}
+      <View style={{paddingHorizontal:16}}>
+      <Category category={(value) => GetPetList(value)} />
+       </View>
+      {/* Scrollable pets list */}
+      <FlatList
+        data={petList}
+        numColumns={NUM_COLS}
+        key={`cols-${NUM_COLS}`}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => <PetListItem pet={item} />}
+        columnWrapperStyle={{
+          justifyContent: "space-between",
+          paddingHorizontal: 16,
+          marginTop: 10,
+
+        }}
+        contentContainerStyle={{
+          paddingBottom: 120, // space for bottom tab bar
+        }}
+        refreshing={loader}
+        onRefresh={() => GetPetList("Dogs")}
+        showsVerticalScrollIndicator={false}
       />
     </View>
-  )
+  );
 }
