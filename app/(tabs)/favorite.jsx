@@ -1,11 +1,17 @@
 import { useUser } from "@clerk/clerk-expo";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { GetFavList } from "../../Shared/Shared";
 import PetListItem from "../../components/Home/PetListItem";
 import { db } from "../../config/FirebaseConfig";
-
 
 export default function Favorite() {
   const { user } = useUser();
@@ -28,52 +34,82 @@ export default function Favorite() {
     setFavIds(ids);
     setLoader(false);
     GetFavPetList(ids);
-    
   };
   // fetch pet details from pet Ids
   const GetFavPetList = async (ids) => {
     setLoader(true);
-    setFavPets([]);
-    const q = query(collection(db, "Pets"), where("id", "in", ids));
-    const querySnapshot = await getDocs(q);
+    // ✅ if no favorites, don't query Firestore
+    if (!Array.isArray(ids) || ids.length === 0) {
+      setFavPets([]); // Explicitly clear the pet list
+      setLoader(false); // Stop the refreshing animation
+      return;
+    }
 
-    querySnapshot.forEach((doc) => {
-      //console.log(doc.data());
-      setFavPets((prev) => [...prev, doc.data()]);
-    });
+    try {
+      const q = query(collection(db, "Pets"), where("id", "in", ids));
+      const snap = await getDocs(q);
 
-    setLoader(false);
+      const pets = snap.docs.map((d) => d.data());
+      setFavPets(pets);
+    } catch (e) {
+      console.log("GetFavPetList error:", e);
+      setFavPets([]);
+    } finally {
+      setLoader(false);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.textbox}>Favorites</Text>
-      <FlatList
-      data ={favPets}
-      numColumns={2}
-      onRefresh={GetFavPetIds}
-      columnWrapperStyle={{justifyContent:'space-between', marginBottom:15}}
 
-      refreshing={loader}
-      renderItem={({item, index}) =>( 
-          <PetListItem pet={item} />
-   
+      {favPets.length === 0 ? (
+        <ScrollView
+          contentContainerStyle={styles.emptyContainer}
+          refreshControl={
+            <RefreshControl refreshing={loader} onRefresh={GetFavPetIds} />
+          }
+        >
+          <Text style={styles.noFavText}> NO favorites Pets 🐾 </Text>
+          <Text style={{ color: "gray", marginTop: 10 }}>
+            Pull down to refresh
+          </Text>
+        </ScrollView>
+      ) : (
+        <FlatList
+          data={favPets}
+          numColumns={2}
+          key={"fav-list-2"}
+          onRefresh={GetFavPetIds}
+          refreshing={loader}
+          renderItem={({ item }) => <PetListItem pet={item} />}
+          columnWrapperStyle={{
+            justifyContent: "space-between",
+            marginBottom: 15,
+          }}
+        />
       )}
-      
-      
-      
-      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
+    padding: 25,
     marginTop: 20,
   },
   textbox: {
     fontFamily: "outfit-medium",
     fontSize: 30,
+  },
+  noFavText: {
+    fontSize: 20,
+    fontFamily: "outfit",
+  },
+  emptyContainer: {
+    flex: 1, // fills remaining space
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

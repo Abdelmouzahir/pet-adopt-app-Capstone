@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
@@ -16,7 +17,7 @@ import {
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { db, storage } from "../../config/FirebaseConfig";
 import Colors from "../../constants/Colors";
@@ -125,6 +126,11 @@ export default function AddNewPet() {
   const categoryOptions = ["Cats", "Dogs", "Birds", "Fish"];
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={styles.container}
@@ -247,6 +253,7 @@ export default function AddNewPet() {
         )}
       </TouchableOpacity>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
