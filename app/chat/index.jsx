@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/clerk-expo";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
   addDoc,
@@ -12,7 +12,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
 import {
   Bubble,
   Composer,
@@ -20,7 +20,7 @@ import {
   GiftedChat,
   InputToolbar,
   Send,
-  Time
+  Time,
 } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { db } from "../../config/FirebaseConfig";
@@ -75,7 +75,20 @@ export default function ChatScreen() {
     );
 
     if (otherUser?.length) {
-      navigation.setOptions({ headerTitle: otherUser[0].name });
+      const { name, imageUrl, avatar } = otherUser[0];
+
+      navigation.setOptions({
+        headerTitleAlign: 'center',
+        headerTitle: () => (
+          <View style={styles.headerContainer}>
+            <Image
+              source={{ uri: imageUrl || avatar }}
+              style={styles.headerAvatar}
+            />
+            <Text style={styles.headerName}>{name}</Text>
+          </View>
+        ),
+      });
     }
   };
 
@@ -169,7 +182,7 @@ export default function ChatScreen() {
     return (
       <Send {...props} containerStyle={styles.sendContainer}>
         <View style={styles.sendButton}>
-          <MaterialIcons name="send" size={28} color={Colors.PRIMARY}  />
+          <MaterialIcons name="send" size={28} color={Colors.PRIMARY} />
         </View>
       </Send>
     );
@@ -180,15 +193,15 @@ export default function ChatScreen() {
       <Bubble
         {...props}
         wrapperStyle={{
-          right: { 
+          right: {
             backgroundColor: Colors.SECONDARY || "#007AFF",
             borderRadius: 18,
-           // padding: 2
+            // padding: 2
           },
-          left: { 
+          left: {
             backgroundColor: Colors.LIGHT_PRIMARY,
             borderRadius: 18,
-           //padding: 2
+            //padding: 2
           },
         }}
         textStyle={{
@@ -272,9 +285,27 @@ const styles = StyleSheet.create({
     height: 40,
   },
   sendButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 10,
     marginBottom: 5,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    // On Android, you might need a slight marginLeft if the title isn't centered
+    marginLeft: Platform.OS === 'ios' ? 0 : -20, 
+  },
+  headerAvatar: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
+    backgroundColor: '#f0f0f0',
+  },
+  headerName: {
+    fontSize: 18,
+    fontFamily: 'outfit-bold', // or your preferred font
+    color: '#000',
   },
 });
