@@ -20,6 +20,7 @@ import {
   GiftedChat,
   InputToolbar,
   Send,
+  Time
 } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { db } from "../../config/FirebaseConfig";
@@ -124,6 +125,26 @@ export default function ChatScreen() {
     );
   };
 
+  const renderTime = (props) => {
+    return (
+      <Time
+        {...props}
+        timeTextStyle={{
+          left: {
+            color: "#000", // This makes the left bubble time black
+            fontFamily: "outfit",
+            fontSize: 10,
+          },
+          right: {
+            color: "#fff", // Keeps the right bubble time white
+            fontFamily: "outfit",
+            fontSize: 10,
+          },
+        }}
+      />
+    );
+  };
+
   const renderInputToolbar = (props) => {
     return (
       <InputToolbar
@@ -162,12 +183,12 @@ export default function ChatScreen() {
           right: { 
             backgroundColor: Colors.SECONDARY || "#007AFF",
             borderRadius: 18,
-            padding: 2
+           // padding: 2
           },
           left: { 
             backgroundColor: Colors.LIGHT_PRIMARY,
             borderRadius: 18,
-            padding: 2
+           //padding: 2
           },
         }}
         textStyle={{
@@ -197,6 +218,7 @@ export default function ChatScreen() {
           showAvatarForEveryMessage={false}
           renderAvatarOnTop={true}
           renderDay={renderDay}
+          renderTime={renderTime}
           renderBubble={renderBubble}
           renderInputToolbar={renderInputToolbar}
           renderComposer={renderComposer}
