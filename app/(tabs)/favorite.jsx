@@ -78,6 +78,7 @@ export default function Favorite() {
       ) : (
         <FlatList
           data={favPets}
+          style={{marginTop:15}}
           numColumns={2}
           key={"fav-list-2"}
           onRefresh={GetFavPetIds}
