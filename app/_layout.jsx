@@ -56,6 +56,7 @@ export default function RootLayout() {
         <Stack.Screen name="login/index" options={{ headerShown: false }} />
         <Stack.Screen name="add-new-pet/index" options={{title:"Add New Pet"}} />
         <Stack.Screen name="chat/index" options={{title:""}} />
+        <Stack.Screen name="user-post/index" options={{title:"My Post"}} />
       </Stack>
     </ClerkProvider>
   );

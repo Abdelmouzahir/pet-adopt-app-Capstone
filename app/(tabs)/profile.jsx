@@ -11,9 +11,11 @@ export default function Profile() {
 
   const Menu = [
     { id: 1, name: "Add New Pet", icon: "add-circle", path: "/add-new-pet" },
+    { id: 5, name: "My Post", icon: "bookmark", path: "/user-post" },
     { id: 2, name: "Favorites", icon: "heart", path: "/(tabs)/favorite" },
     { id: 3, name: "Inbox", icon: "chatbubble", path: "/(tabs)/inbox" },
     { id: 4, name: "Logout", icon: "exit", path: "logout" },
+    
   ];
 
   const onPressMenu = (item) => {
