@@ -18,9 +18,10 @@ export default function Profile() {
     
   ];
 
-  const onPressMenu = (item) => {
+  const onPressMenu = async (item) => {
     if (item.path === 'logout') {
-      signOut();
+       await signOut();
+      router.replace('/login')
       return;
     }
     router.push(item.path);

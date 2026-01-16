@@ -1,31 +1,39 @@
-import { useUser } from "@clerk/clerk-expo";
+import { useAuth } from "@clerk/clerk-expo";
 import { Redirect } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 export default function Index() {
+  // Use useAuth to get the loading status and sign-in status
+  const { isLoaded, isSignedIn } = useAuth();
 
-  const {user} = useUser();
+  // This prevents the code from jumping to the login redirect prematurely
+  if (!isLoaded) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
 
+  // 2. redirect based on isSignedIn
   return (
-    <View
-      style={styles.view}
-    >
-      {user ? 
-      <Redirect href={"/(tabs)/home"} />
-      :
-      <Redirect href={"/login"} />
-      }
-      
+    <View style={styles.view}>
+      {isSignedIn ? (
+        <Redirect href={"/(tabs)/home"} />
+      ) : (
+        <Redirect href={"/login"} />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    fontFamily:'outfit',
-    fontSize: 40,
-  },
-  view:{
+  view: {
     flex: 1,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
