@@ -7,31 +7,25 @@ import Colors from "../../constants/Colors";
 
 export default function UserItem({ userInfo }) {
 
-  const onDeletePress = (e) => {
-    // 🛑 Prevent the Link from opening the chat screen
+  const onDeleteChat = (e) => {
+    // 🛑 This stops the Link from opening the chat when you click delete
     e.stopPropagation();
 
-    // ⚠️ Confirmation Message
     Alert.alert(
-      "Delete Chat",
-      `Are you sure you want to delete your conversation with ${userInfo?.name}?`,
+      "Delete Conversation",
+      "Are you sure you want to delete this chat?",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          style: "destructive",
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete", 
+          style: "destructive", 
           onPress: async () => {
             try {
-              // Deletes the document from the 'Chat' collection
               await deleteDoc(doc(db, "Chat", userInfo.docId));
-              console.log("Chat deleted successfully");
             } catch (error) {
               console.error("Error deleting chat:", error);
             }
-          },
+          } 
         },
       ]
     );
@@ -49,12 +43,13 @@ export default function UserItem({ userInfo }) {
             <Text style={styles.text}>{userInfo?.name}</Text>
           </View>
 
-          {/* Delete Icon */}
-          <TouchableOpacity onPress={onDeletePress} style={styles.deleteButton}>
+          {/* Trash Button */}
+          <TouchableOpacity onPress={onDeleteChat} style={styles.deleteButton}>
             <Ionicons name="trash-outline" size={24} color="red" />
           </TouchableOpacity>
         </View>
 
+        {/* Your custom line style */}
         <View style={styles.line} />
       </TouchableOpacity>
     </Link>
@@ -64,27 +59,27 @@ export default function UserItem({ userInfo }) {
 const styles = StyleSheet.create({
   itemWrapper: {
     width: '100%',
-    paddingHorizontal: 5,
+    paddingVertical: 5,
   },
   mainRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Pushes the trash icon to the right
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   container: {
-    marginVertical: 7,
     flexDirection: "row",
-    gap: 10,
+    gap: 12,
     alignItems: "center",
   },
   avatar: {
-    width: 45,
-    height: 45,
-    borderRadius: 99,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#f0f0f0'
   },
   text: {
     fontFamily: "outfit",
-    fontSize: 18,
+    fontSize: 20,
   },
   deleteButton: {
     padding: 10,

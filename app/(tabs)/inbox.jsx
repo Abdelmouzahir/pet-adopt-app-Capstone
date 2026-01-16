@@ -9,6 +9,7 @@ export default function Inbox() {
   const { user } = useUser();
   const [userList, setUserList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -55,6 +56,7 @@ export default function Inbox() {
       };
     });
   };
+  
 
   return (
     <View style={styles.container}>
@@ -69,6 +71,17 @@ export default function Inbox() {
         renderItem={({ item }) => (
           <UserItem userInfo={item} />
         )}
+        // 2. Added Empty State Logic
+                ListEmptyComponent={
+                  !loader && (
+                    <View style={styles.emptyContainer}>
+                      <Text style={styles.noPostText}>No Messages In your Inbox 📩</Text>
+                      <Text style={{ color: "gray", marginTop: 10, fontFamily: 'outfit' }}>
+                        Pull down to refresh
+                      </Text>
+                    </View>
+                  )
+                }
       />
     </View>
   );
@@ -84,4 +97,15 @@ const styles = StyleSheet.create({
     fontFamily: "outfit-medium",
     fontSize: 30,
   },
+  // Styles for the empty state
+  emptyContainer: {
+    alignItems: 'center',
+    marginTop: 250,
+    padding: 20
+  },
+  noPostText: {
+    fontFamily: 'outfit-medium',
+    fontSize: 20,
+    textAlign: 'center'
+  }
 });
