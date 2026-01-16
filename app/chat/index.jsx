@@ -13,10 +13,15 @@ import {
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import { Bubble, GiftedChat, InputToolbar, Send } from "react-native-gifted-chat";
 import {
-  useSafeAreaInsets
-} from "react-native-safe-area-context";
+  Bubble,
+  Composer,
+  Day,
+  GiftedChat,
+  InputToolbar,
+  Send,
+} from "react-native-gifted-chat";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { db } from "../../config/FirebaseConfig";
 import Colors from "../../constants/Colors";
 
@@ -32,7 +37,6 @@ export default function ChatScreen() {
 
     getUserDetails();
 
-    // Real-time listener for messages
     const q = query(
       collection(db, "Chat", params.id, "Messages"),
       orderBy("createdAt", "desc")
@@ -44,11 +48,13 @@ export default function ChatScreen() {
         return {
           _id: data._id || d.id,
           text: data.text || "",
-          createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
+          createdAt: data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : new Date(),
           user: {
             _id: data.user?._id,
             name: data.user?.name,
-            avatar: data.user?.avatar, // This pulls the avatar from Firestore
+            avatar: data.user?.avatar,
           },
         };
       });
@@ -75,20 +81,17 @@ export default function ChatScreen() {
   const onSend = useCallback(
     async (newMessages = []) => {
       const msg = newMessages[0];
-
-      // Prepare the object for Firestore
       const enrichedMessage = {
         _id: msg._id,
         text: msg.text,
         user: {
           _id: user?.primaryEmailAddress?.emailAddress,
           name: user?.fullName,
-          avatar: user?.imageUrl, // Save your avatar URL to DB
+          avatar: user?.imageUrl,
         },
         createdAt: serverTimestamp(),
       };
 
-      // Optimistic local update (makes UI feel fast)
       setMessages((prev) =>
         GiftedChat.append(prev, [
           {
@@ -99,7 +102,6 @@ export default function ChatScreen() {
         ])
       );
 
-      // Save to Firebase
       await addDoc(
         collection(db, "Chat", params.id, "Messages"),
         enrichedMessage
@@ -107,6 +109,74 @@ export default function ChatScreen() {
     },
     [user, params?.id]
   );
+
+  // --- CUSTOM RENDER COMPONENTS ---
+
+  const renderDay = (props) => {
+    return (
+      <View style={{ alignItems: "center", marginVertical: 10 }}>
+        <Day
+          {...props}
+          dateFormat="ddd, MMM D [at] h:mm A"
+          textStyle={styles.dayText}
+        />
+      </View>
+    );
+  };
+
+  const renderInputToolbar = (props) => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={styles.inputToolbar}
+        primaryStyle={{ alignItems: "center" }}
+      />
+    );
+  };
+
+  const renderComposer = (props) => {
+    return (
+      <Composer
+        {...props}
+        textInputStyle={styles.composer}
+        placeholder="Message..."
+      />
+    );
+  };
+
+  const renderSend = (props) => {
+    return (
+      <Send {...props} containerStyle={styles.sendContainer}>
+        <View style={styles.sendButton}>
+          <MaterialIcons name="send" size={28} color={Colors.PRIMARY}  />
+        </View>
+      </Send>
+    );
+  };
+
+  const renderBubble = (props) => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: { 
+            backgroundColor: Colors.SECONDARY || "#007AFF",
+            borderRadius: 18,
+            padding: 2
+          },
+          left: { 
+            backgroundColor: Colors.LIGHT_PRIMARY,
+            borderRadius: 18,
+            padding: 2
+          },
+        }}
+        textStyle={{
+          right: { color: "#fff", fontFamily: "outfit" },
+          left: { color: "#000", fontFamily: "outfit" },
+        }}
+      />
+    );
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -123,47 +193,17 @@ export default function ChatScreen() {
             name: user?.fullName,
             avatar: user?.imageUrl,
           }}
-          // AVATAR FIXES
-          showUserAvatar={true} // Shows your avatar on the right
-          showAvatarForEveryMessage={true}
-          renderAvatarOnTop={true} 
-          
-          // UI FIXES
-          placeholder="Type a message..."
-          alwaysShowSend={true}
-          scrollToBottom={true}
-          
-          // Input Toolbar Styling (fixes the "looks bad" UI)
-          renderInputToolbar={(props) => (
-            <InputToolbar
-              {...props}
-              containerStyle={styles.inputToolbar}
-            />
-          )}
-
-          // Send Button Styling
-          renderSend={(props) => (
-            <Send {...props} containerStyle={styles.sendButton}>
-               <MaterialIcons name="send" size={28} color={Colors.PRIMARY} />
-            </Send>
-          )}
-
-          // Message Bubble Styling
-          renderBubble={(props) => (
-            <Bubble
-              {...props}
-              wrapperStyle={{
-                right: { backgroundColor: Colors.SECONDARY },
-                left: { backgroundColor: Colors.LIGHT_PRIMARY },
-              }}
-              textStyle={{
-                right: { color: "#fff", fontFamily: 'outfit' },
-                left: { color: "#000", fontFamily: 'outfit' },
-              }}
-            />
-          )}
+          showUserAvatar={true}
+          showAvatarForEveryMessage={false}
+          renderAvatarOnTop={true}
+          renderDay={renderDay}
+          renderBubble={renderBubble}
+          renderInputToolbar={renderInputToolbar}
+          renderComposer={renderComposer}
+          renderSend={renderSend}
+          alwaysShowSend
+          maxComposerHeight={100}
         />
-        {/* Adds space for the home indicator on iPhone */}
         <View style={{ height: insets.bottom }} />
       </KeyboardAvoidingView>
     </View>
@@ -173,19 +213,46 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    
   },
+  // Day/Date Style
+  dayText: {
+    color: Colors.WHITE,
+    fontSize: 12,
+    fontFamily: "outfit-medium",
+  },
+  // Modern iMessage Style Input
   inputToolbar: {
     backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
-    paddingTop: 5,
-    paddingHorizontal: 5,
+    borderTopWidth: 0,
+    marginHorizontal: 10,
+    marginBottom: 5,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    paddingTop: 0,
+  },
+  composer: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    marginTop: 7,
+    marginBottom: 7,
+    fontSize: 16,
+    fontFamily: "outfit",
+    lineHeight: 20,
+    color: "#000",
+  },
+  sendContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    marginRight: 5,
+    height: 40,
   },
   sendButton: {
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
     marginBottom: 5,
-  }
+  },
 });
