@@ -78,9 +78,9 @@ export default function LoginScreen() {
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color={Colors.PRIMARY} />
-        {isRedirecting && (
-          <Text style={styles.loaderText}>Loading your profile...</Text>
-        )}
+        <Text style={styles.loaderText}>
+          {isSignedIn ? "Redirecting to Home..." : "Loading your profile..."}
+        </Text>
       </View>
     );
   }

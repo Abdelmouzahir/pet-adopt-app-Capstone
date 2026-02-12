@@ -35,14 +35,19 @@ function InitialLayout() {
 
     const inTabsGroup = segments[0] === "(tabs)";
 
-    if (isSignedIn && !inTabsGroup) {
-      // If signed in, force user into tabs
-      router.replace("/(tabs)/home");
-    } else if (!isSignedIn) {
-      // If not signed in, force user to login
-      router.replace("/login");
+    if (isSignedIn) {
+      // If we are signed in but NOT in tabs, go to home
+      if (!inTabsGroup) {
+        router.replace("/(tabs)/home");
+      }
+    } else {
+      // If not signed in, and not already on the login page, go to login
+      // Note: segments[0] for "app/login/index.jsx" is "login"
+      if (segments[0] !== "login") {
+        router.replace("/login");
+      }
     }
-  }, [isSignedIn, isLoaded]);
+  }, [isSignedIn, isLoaded, segments]);
 
   // IMPORTANT: This prevents the "flash"
   // If Clerk hasn't loaded, we show a loader instead of the Stack
@@ -59,7 +64,10 @@ function InitialLayout() {
       <Stack.Screen name="index" options={{ title: "" }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false, title: "" }} />
       <Stack.Screen name="login/index" options={{ headerShown: false }} />
-      <Stack.Screen name="add-new-pet/index" options={{ title: "Add New Pet" }} />
+      <Stack.Screen
+        name="add-new-pet/index"
+        options={{ title: "Add New Pet" }}
+      />
       <Stack.Screen name="chat/index" options={{ title: "" }} />
       <Stack.Screen name="user-post/index" options={{ title: "My Post" }} />
     </Stack>
