@@ -1,7 +1,6 @@
 # File Tree: pet-adopt-app
 
 **Generated:** 2/12/2026, 11:13:31 AM
-**Root Path:** `c:\Users\mz-ab\Desktop\capstone\pet-adopt-app`
 
 ```
 ├── 📁 Shared
